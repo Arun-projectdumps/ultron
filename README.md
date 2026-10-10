@@ -18,6 +18,8 @@
 > **macOS 11 Big Sur or later** and ships as a `.dmg`. Windows and Linux are not supported, and the
 > browser prototype also relies on macOS tools (`osascript`, `ps`, `lsof`).
 
+**[⬇ Download the latest `.dmg`](https://github.com/Arun-projectdumps/ultron/releases/latest)** (Apple Silicon, macOS 11+)
+
 ---
 
 ## Contents
