@@ -1,0 +1,20 @@
+.ide {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 50% 45%;
+}
+.hidden { opacity: 0; }
+/* A cut, not a slow fade: the panels flash accent as they land. */
+.entering { animation: ideIn 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+@keyframes ideIn {
+  from { opacity: 0; transform: scale(1.012); }
+  to { opacity: 1; transform: none; }
+}
+.main { flex: 1; min-height: 0; display: flex; }
+.blackout { position: fixed; inset: 0; z-index: 1000; background: #000; }
+@media (prefers-reduced-motion: reduce) {
+  @keyframes ideIn { from { opacity: 0; } to { opacity: 1; } }
+}

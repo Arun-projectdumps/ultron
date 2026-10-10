@@ -1,0 +1,47 @@
+.field { display: flex; flex-direction: column; gap: 8px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.swatch {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  cursor: pointer;
+  background:
+    linear-gradient(var(--c), var(--c)),
+    repeating-conic-gradient(#555 0 25%, #333 0 50%) 0 0 / 8px 8px;
+}
+.swatch:hover { border-color: var(--border-accent); }
+.label { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 12px; color: var(--text); }
+.hint { font-size: 10.5px; color: var(--text-dim); }
+.hex {
+  width: 158px;
+  height: 26px;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  font: 11.5px/1 var(--font-mono);
+  color: var(--text-muted);
+}
+.hex:focus { border-color: var(--border-accent); color: var(--text); }
+
+.picker { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: rgba(0, 0, 0, 0.25); }
+.picker :global(.react-colorful) { width: 100%; height: 150px; }
+.picker :global(.react-colorful__pointer) { width: 18px; height: 18px; }
+.picker :global(.react-colorful__hue), .picker :global(.react-colorful__alpha) { height: 12px; border-radius: 6px; margin-top: 8px; }
+.noAlpha :global(.react-colorful__alpha) { display: none; }
+.channels { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+.channels label { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--text-dim); }
+.channels input {
+  width: 48px;
+  height: 24px;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  font: 11px var(--font-mono);
+  color: var(--text);
+}
+.channels :global(.icon-btn) { margin-left: auto; }

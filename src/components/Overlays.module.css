@@ -1,0 +1,17 @@
+.message { margin: 0; color: var(--text-muted); line-height: 1.55; }
+.toast {
+  position: fixed;
+  z-index: 400;
+  left: 50%;
+  bottom: 44px;
+  transform: translateX(-50%);
+  padding: 9px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent-hot);
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  font-size: 12.5px;
+  animation: up 200ms var(--ease) both;
+}
+@keyframes up { from { opacity: 0; transform: translate(-50%, 6px); } }

@@ -1,0 +1,29 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  background: var(--overlay);
+  clip-path: var(--notch-shape, none);
+  pointer-events: none;
+  animation: in 220ms var(--ease) both;
+}
+.media { width: min(220px, 50%); aspect-ratio: 1; }
+.label {
+  font: 400 12px/1 var(--font-display);
+  text-transform: uppercase;
+  color: var(--metal-2);
+  letter-spacing: 0.1em;
+  animation: spread 1.2s var(--ease) infinite alternate;
+}
+@keyframes in { from { opacity: 0; } }
+@keyframes spread {
+  from { letter-spacing: 0.1em; color: var(--metal-2); }
+  to { letter-spacing: 0.22em; color: var(--metal-1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .label { animation: none; letter-spacing: 0.16em; }
+}

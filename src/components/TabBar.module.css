@@ -1,0 +1,78 @@
+.bar {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 34px;
+  padding: 0 4px 0 2px;
+}
+.tabs { flex: 1; min-width: 0; display: flex; align-items: flex-end; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  position: relative;
+  flex: 0 1 190px;
+  min-width: 96px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 6px 0 14px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  cursor: default;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.tab:hover { color: var(--text); background: color-mix(in srgb, var(--bg) 30%, var(--hover-bg)); }
+.active { color: var(--text); background: var(--surface); }
+.active::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--accent-hot);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+.dragging { opacity: 0.4; }
+.dropBefore { box-shadow: inset 2px 0 0 var(--accent-hot); }
+
+.dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-hot); box-shadow: 0 0 6px var(--accent-glow); }
+.title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rename { flex: 1; min-width: 0; height: 20px; padding: 0 4px; border: 1px solid var(--border-accent); border-radius: 3px; background: rgba(0, 0, 0, 0.5); color: var(--text); font-size: 12px; }
+
+.close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-dim);
+  opacity: 0;
+  cursor: pointer;
+}
+.tab:hover .close, .active .close { opacity: 1; }
+.close:hover { background: var(--hover-bg); color: var(--accent-hot); }
+
+.add {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 2px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.add:hover { color: var(--text); background: var(--hover-bg); }
+.tools { display: flex; gap: 2px; padding-bottom: 4px; }

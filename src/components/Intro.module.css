@@ -1,0 +1,206 @@
+.intro {
+  --d: 4.2s;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* Camera: a slow 1.0 → 1.06 push-in over the whole intro. */
+.camera {
+  position: absolute;
+  inset: 0;
+  animation: push var(--d) linear both;
+}
+@keyframes push { from { transform: scale(1); } to { transform: scale(1.06); } }
+
+.media { position: absolute; inset: 0; }
+
+/* Horizon glow under the text: its own color, intensity and spread (theme.intro.glow). */
+.horizon {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse calc(60% * var(--glow-size, 1)) calc(16% * var(--glow-size, 1)) at 50% 55%,
+      color-mix(in srgb, var(--glow-color, #c8102e) calc(var(--glow-a, 0.55) * 100%), transparent), transparent 70%),
+    radial-gradient(ellipse calc(95% * var(--glow-size, 1)) calc(40% * var(--glow-size, 1)) at 50% 58%,
+      color-mix(in srgb, var(--glow-color, #c8102e) calc(var(--glow-a, 0.55) * 33%), transparent), transparent 75%);
+  opacity: 0;
+  animation: fadeIn calc(var(--d) * 0.35) var(--ease) calc(var(--d) * 0.05) forwards;
+}
+
+/* ---------- Rain: pure CSS, compositor-only transforms, gone when the intro unmounts ---------- */
+.rain {
+  position: absolute;
+  inset: -20% -10%;
+  transform: rotate(12deg);
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+  pointer-events: none;
+}
+.rainFar, .rainNear {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -320px;
+  bottom: 0;
+  will-change: transform;
+}
+.rainFar {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='320'%3E%3Cg stroke='%23c9cbd4' stroke-linecap='round'%3E%3Cline x1='12' y1='10' x2='12' y2='46' stroke-opacity='.18'/%3E%3Cline x1='64' y1='140' x2='64' y2='170' stroke-opacity='.12'/%3E%3Cline x1='101' y1='60' x2='101' y2='100' stroke-opacity='.16'/%3E%3Cline x1='150' y1='220' x2='150' y2='252' stroke-opacity='.14'/%3E%3Cline x1='190' y1='20' x2='190' y2='58' stroke-opacity='.12'/%3E%3Cline x1='35' y1='250' x2='35' y2='282' stroke-opacity='.15'/%3E%3Cline x1='128' y1='300' x2='128' y2='318' stroke-opacity='.1'/%3E%3C/g%3E%3C/svg%3E");
+  animation: fall 0.9s linear infinite;
+}
+.rainNear {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='320'%3E%3Cg stroke='%23e6e7ee' stroke-linecap='round' stroke-width='1.4'%3E%3Cline x1='40' y1='30' x2='40' y2='96' stroke-opacity='.22'/%3E%3Cline x1='170' y1='170' x2='170' y2='230' stroke-opacity='.18'/%3E%3Cline x1='290' y1='80' x2='290' y2='150' stroke-opacity='.2'/%3E%3Cline x1='230' y1='260' x2='230' y2='310' stroke-opacity='.14'/%3E%3C/g%3E%3C/svg%3E");
+  animation: fall 0.55s linear infinite;
+}
+@keyframes fall { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, 320px, 0); } }
+
+/* ---------- Stage ---------- */
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* Emblem behind the text with a slow crimson bloom. */
+.emblem {
+  position: absolute;
+  width: min(58vh, 420px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  animation: bloom calc(var(--d) * 0.42) var(--ease) calc(var(--d) * 0.33) forwards;
+}
+.emblem svg, .emblem img { width: 100%; height: 100%; }
+@keyframes bloom {
+  from { opacity: 0; transform: scale(0.92); filter: drop-shadow(0 0 0 transparent); }
+  60% { filter: drop-shadow(0 0 70px var(--accent-glow)) drop-shadow(0 0 18px var(--accent-glow)); }
+  to { opacity: 0.8; transform: scale(1); filter: drop-shadow(0 0 44px var(--accent-glow)); }
+}
+
+.lockup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+}
+
+.title {
+  display: grid;
+  margin: 0 -0.12em 0 0; /* letter-spacing adds trailing space; keep the word centered */
+  font: 400 clamp(30px, 5vw, 76px)/1.1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  opacity: 0;
+  animation: textIn calc(var(--d) * 0.29) var(--ease) calc(var(--d) * 0.07) forwards;
+}
+@keyframes textIn {
+  from { opacity: 0; transform: translateY(6px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.title > span { grid-area: 1 / 1; }
+
+/* Chrome 3D (default) ------------------------------------------------------- */
+/* Extrusion lives on its own layer: text-shadow on clipped text would paint over the face. */
+.extrude {
+  color: #8a8a92;
+  text-shadow:
+    0 1px 0 var(--accent-line),
+    0.6px 1px 0 #8a8a92,
+    1.2px 2px 0 #808087,
+    1.8px 3px 0 #76767d,
+    2.4px 4px 0 #6b6b72,
+    3.0px 5px 0 #616168,
+    3.6px 6px 0 #57575d,
+    4.2px 7px 0 #4d4d53,
+    4.8px 8px 0 #434348,
+    5.4px 9px 0 #39393e,
+    6.0px 10px 0 #2e2e33,
+    6.6px 11px 0 #242429,
+    7.2px 12px 0 #1a1a1e,
+    9px 18px 22px rgba(0, 0, 0, 0.9);
+}
+.face {
+  background: linear-gradient(180deg, #ffffff 0%, #d8d8de 38%, #5a5b63 50%, #2b2c31 52%, #9a9ba3 75%, #f2f2f5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* Bevel: a fine bright edge nudged up-left catches the light. */
+.bevel {
+  color: transparent;
+  -webkit-text-stroke: 0.6px rgba(255, 255, 255, 0.55);
+  transform: translate(-0.5px, -0.5px);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 55%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 55%);
+}
+/* Specular: a clipped diagonal light sweep that runs twice. */
+.sweep {
+  background: linear-gradient(110deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%) no-repeat;
+  background-size: 250% 100%;
+  background-position: 150% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sweep calc(var(--d) * 0.2) cubic-bezier(0.45, 0, 0.25, 1) calc(var(--d) * 0.26) 2 both;
+}
+@keyframes sweep {
+  from { background-position: 150% 0; }
+  to { background-position: -60% 0; }
+}
+
+/* Flat */
+[data-style='flat'] .extrude, [data-style='flat'] .bevel, [data-style='flat'] .sweep { display: none; }
+[data-style='flat'] .face { background: none; color: var(--metal-1); }
+
+/* Glow */
+[data-style='glow'] .extrude, [data-style='glow'] .bevel, [data-style='glow'] .sweep { display: none; }
+[data-style='glow'] .face {
+  background: none;
+  color: #fff;
+  text-shadow: 0 0 6px var(--accent-hot), 0 0 22px var(--accent-glow), 0 0 60px var(--accent-glow);
+}
+
+/* Outline */
+[data-style='outline'] .extrude, [data-style='outline'] .bevel { display: none; }
+[data-style='outline'] .face {
+  background: none;
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--metal-1);
+  filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.subtitle {
+  font: 400 clamp(12px, 1.2vw, 15px)/1 var(--font-ui);
+  letter-spacing: 0.42em;
+  margin-right: -0.42em;
+  text-transform: lowercase;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: fadeIn calc(var(--d) * 0.2) var(--ease) calc(var(--d) * 0.26) forwards;
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ---------- Cut to the IDE ---------- */
+.exiting { animation: cut 0.42s cubic-bezier(0.6, 0, 0.9, 0.4) forwards; pointer-events: none; }
+@keyframes cut { to { opacity: 0; } }
+.exiting .stage { animation: stageOut 0.3s var(--ease) forwards; }
+@keyframes stageOut { to { opacity: 0; transform: scale(1.03); } }
+
+/* ---------- Reduced motion: simple fades ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .camera, .rainFar, .rainNear { animation: none; }
+  .title { animation-name: fadeIn; }
+  .sweep { display: none; }
+  .emblem { animation-name: emblemFade; }
+  .exiting .stage { animation-name: cut; }
+  @keyframes emblemFade { to { opacity: 0.8; } }
+}

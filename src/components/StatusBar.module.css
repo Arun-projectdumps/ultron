@@ -1,0 +1,54 @@
+.bar {
+  position: relative;
+  height: var(--statusbar-h);
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 0 14px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+/* Thin accent line across the top. */
+.bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-hot), var(--accent) 35%, color-mix(in srgb, var(--accent) 30%, transparent) 75%, transparent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); flex: none; }
+.running {
+  background: var(--accent-hot);
+  box-shadow: 0 0 4px var(--accent-hot), 0 0 10px var(--accent-glow);
+  /* 2 s × 3 then static glow (spec 8: no infinite idle animations) */
+  animation: pulse 2s var(--ease) 3;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 var(--accent-glow), 0 0 4px var(--accent-hot); }
+  70% { box-shadow: 0 0 0 7px transparent, 0 0 4px var(--accent-hot); }
+  100% { box-shadow: 0 0 4px var(--accent-hot), 0 0 10px var(--accent-glow); }
+}
+.stateOn { color: var(--text); }
+.sep { color: var(--text-dim); }
+.path { font-family: var(--font-mono); font-size: 11px; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.power {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 18px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.power:hover { color: var(--accent-hot); background: var(--hover-bg); }
+@media (prefers-reduced-motion: reduce) { .running { animation: none; } }

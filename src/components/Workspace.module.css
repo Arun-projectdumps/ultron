@@ -1,0 +1,111 @@
+.workspace { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 6px 12px 10px; }
+.area { flex: 1; min-height: 0; display: flex; }
+
+/* ---------- splits ---------- */
+.split { flex: 1; min-width: 0; min-height: 0; display: flex; }
+.row { flex-direction: row; }
+.column { flex-direction: column; }
+.child { flex-basis: 0; min-width: 0; min-height: 0; display: flex; }
+.divider { flex: none; position: relative; z-index: 2; }
+.row > .divider { width: 8px; cursor: col-resize; }
+.column > .divider { height: 8px; cursor: row-resize; }
+.divider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: var(--accent-hot);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+.row > .divider::after { width: 2px; }
+.column > .divider::after { height: 2px; }
+.divider:hover::after, .divider:active::after { opacity: 0.7; box-shadow: 0 0 8px var(--accent-glow); }
+
+/* ---------- pane: notched panel ----------
+   The top-left and bottom-right corners are cut. The cut shape (clip-path) lives only on leaf layers
+   (surface, ring, overlays): clipping the pane itself would force WebKit to composite it plus a mask
+   layer around the terminal's scroll layer, costing ~2× pane size of graphics memory at Retina. */
+.pane {
+  --notch: 14px;
+  --notch-shape: polygon(var(--notch) 0, 100% 0, 100% calc(100% - var(--notch)), calc(100% - var(--notch)) 100%, 0 100%, 0 var(--notch));
+  --pane-border: rgba(170, 172, 182, 0.16);
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+.isActive { --pane-border: var(--border-accent); }
+.focused { --pane-border: var(--accent); }
+
+.inner { position: absolute; inset: 0; overflow: hidden; }
+.surface { position: absolute; inset: 0; background: var(--surface); clip-path: var(--notch-shape); }
+
+.ring {
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  pointer-events: none;
+  background: var(--pane-border);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  clip-path: var(--notch-shape);
+  transition: background var(--dur) var(--ease);
+}
+/* Accent lines along the two cut corners (+ a short run onto the adjoining edges). */
+.notchTL, .notchBR {
+  position: absolute;
+  width: calc(var(--notch) * 1.4142); /* exactly the cut diagonal */
+  height: 2px;
+  pointer-events: none;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.notchTL { left: 0; top: calc(var(--notch) - 1px); background: var(--accent-hot); transform: rotate(-45deg); transform-origin: 0 0; }
+.notchBR { right: 0; bottom: calc(var(--notch) - 1px); background: var(--accent); transform: rotate(-45deg); transform-origin: 100% 100%; }
+.pane::before, .pane::after {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+}
+.pane::before { left: var(--notch); top: 0; width: 26px; height: 1px; background: var(--accent-hot); }
+.pane::after { right: var(--notch); bottom: 0; width: 26px; height: 1px; background: var(--accent); }
+
+/* Thin glowing accent top edge. Static: no repaint cost. */
+.edge {
+  position: absolute;
+  left: var(--notch);
+  right: 0;
+  top: 0;
+  height: 26px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, var(--accent-hot) 18%, var(--accent-hot) 70%, transparent) top / 100% 1px no-repeat,
+    radial-gradient(ellipse 60% 100% at 45% 0, var(--accent-soft), transparent 75%);
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+.isActive .edge { opacity: 1; }
+
+.host { position: absolute; inset: 14px 6px 8px 14px; }
+.host :global(.pane-host) { position: absolute; inset: 0; }
+.host :global(.xterm) { height: 100%; }
+.host :global(.xterm-viewport) { background: transparent !important; }
+
+/* Quick accent flash on the panel borders when the intro cuts to the IDE. */
+.flash {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--notch-shape);
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: inset 0 0 0 1px var(--accent-hot), inset 0 0 40px var(--accent-glow);
+}
+:global(.ide-flash) .flash, .flashOn { animation: flash 650ms ease-out; }
+@keyframes flash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
+
+/* In a split, unfocused panes recede so the focused (accent) one reads clearly. */
+.pane:not(.isActive) .notchTL, .pane:not(.isActive) .notchBR,
+.pane:not(.isActive)::before, .pane:not(.isActive)::after { opacity: 0.35; }
+.pane:not(.isActive) .edge { opacity: 0.25; }

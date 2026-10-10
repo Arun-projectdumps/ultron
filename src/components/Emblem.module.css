@@ -1,0 +1,28 @@
+.emblem { display: block; flex: none; }
+.glow { filter: drop-shadow(0 0 10px var(--accent-glow)); }
+
+.trace path {
+  fill: none;
+  stroke: var(--accent-hot);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trace 1.2s var(--ease) infinite;
+}
+@keyframes trace {
+  0%   { stroke-dashoffset: 1; opacity: 0.4; }
+  55%  { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: -1; opacity: 0.4; }
+}
+
+.pulse { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trace path { animation: fade 1.2s ease-in-out infinite; stroke-dashoffset: 0; }
+  @keyframes fade { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+}

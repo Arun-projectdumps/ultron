@@ -1,0 +1,30 @@
+.bar {
+  height: var(--topbar-h);
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 12px 0 calc(16px + var(--traffic-lights));
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 80%, transparent), color-mix(in srgb, var(--bg) 45%, transparent));
+  position: relative;
+  z-index: 20;
+}
+.brand { display: flex; align-items: center; gap: 10px; flex: none; }
+.wordmark { font-size: 12.5px; letter-spacing: 0.2em; padding-top: 1px; }
+
+.path {
+  flex: 1;
+  min-width: 0;
+  font: 400 12px/1 var(--font-mono);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl; /* ellipsize the start of long paths, keep the folder name visible */
+  text-align: left;
+}
+.right { display: flex; align-items: center; gap: 8px; flex: none; }
+.right :global(.btn) { height: 30px; font-size: 12.5px; }
+.anchor { position: relative; }
+.active { --b-border: var(--border-accent) !important; color: var(--text) !important; }
